@@ -11,7 +11,7 @@ const getBook = require('./database/getBookInfo')
 
 let app = express()
 app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
 
 app.all('*', function(req, res, next) {
@@ -29,11 +29,11 @@ app.all('*', function(req, res, next) {
 // })
 
 app.post('/Login', function (req, res) {
-   // 输出 JSON 格式
-   console.log(req.body)
-   res.send(JSON.stringify("11"));
-}
-)
+   let data = req.body
+   console.log(data)
+   // let data = JSON.parse(req.body)
+   res.send("11");
+})
 
 
 app.listen(3000,function(){
