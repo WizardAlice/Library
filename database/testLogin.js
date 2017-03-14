@@ -5,7 +5,6 @@ const connect = require('./connect')
 function testLogin(id, pwd) {
   let connection = connect.getConnection()
   let string1 = "SELECT * FROM library.user where cardId = \"" +id +"\"and password =\""+pwd+"\""
-  console.log(string1)
   let deferred = Q.defer()
   connection.query(string1, (err, data) => {
     if (err)

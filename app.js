@@ -29,7 +29,6 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
 
 app.post('/login', function (req, res) {
   let data = req.body
-  console.log('data:',data)
   testLogin.testLogin(req.body.userName,req.body.pwd).then((result)=>{
     console.log(result)
     if(result.length==0) res.json("fail")
