@@ -5,6 +5,7 @@ const Q = require('q')
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const testLogin = require('./database/testLogin')
+const getNews = require('./database/getNews')
 
 
 
@@ -27,12 +28,18 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
 //   })
 // })
 
-app.post('/login', function (req, res) {
+app.post('/login',(req,res)=>{
   let data = req.body
   testLogin.testLogin(req.body.userName,req.body.pwd).then((result)=>{
     console.log(result)
     if(result.length==0) res.json("fail")
     else {res.json(result)}
+  })
+})
+
+getNews.getNews().then((data)=>{
+  app.get('/getNews5',(req,res)=>{
+    res.json(data)
   })
 })
 

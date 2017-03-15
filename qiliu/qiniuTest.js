@@ -1,5 +1,7 @@
 const qiniu = require("qiniu")
 const fnv = require('fnv-plus')
+const getFiles = require('./getFile')
+const store = require('../database/news_store_img')
 
 //需要填写你的 Access Key 和 Secret Key
 qiniu.conf.ACCESS_KEY = 'MI-TKUDiDhATmP6nbdJKOzLK2llnrCkXoVmHbZpS';
@@ -13,7 +15,7 @@ bucket = 'taskuserimg';
 
 
 function getKey(id){
-  return fnv.hash('id',64).str()+'\.png'
+  return fnv.hash(id,64).str()+'\.jpg'
 }
 
 
@@ -30,7 +32,7 @@ function uptoken(bucket, key) {
 //要上传文件的本地路径,生成本地地址
 // filePath = './edit.png'
 function getFilePath(id){
-  return './img/'+id+'\.png'
+  return './img/img_of_news/'+id+'\.jpg'
 }
 
 
@@ -40,18 +42,25 @@ function uploadFile(id) {
   let token = uptoken(bucket, key);
   let localFile = getFilePath(id)
   var extra = new qiniu.io.PutExtra();
-    qiniu.io.putFile(token, key, localFile, extra, function(err, ret) {
-      if(!err) {
-        // 上传成功， 处理返回值
-        console.log(ret.hash, ret.key, ret.persistentId)
-        return ret.key   
-      } else {
-        // 上传失败， 处理返回代码
-        console.log(err);
-      }
-  });
+  qiniu.io.putFile(token, key, localFile, extra, function(err, ret) {
+    if(!err) {
+      // 上传成功， 处理返回值
+      store.store(id,key).then(()=>{
+        return ret.key
+      })   
+    } else {
+      // 上传失败， 处理返回代码
+      console.log(err)
+    }
+  })
 }
 
 //调用uploadFile上传，用户id为123，图片名称是123.png
-// uploadFile(123);
+// uploadFile("0000000002");
 exports.uploadFile = uploadFile
+
+var datas = getFiles.getFiles.getImageFiles("./img/img_of_news/")
+console.log(datas)
+datas.map((data)=>{
+  uploadFile(data)
+})
