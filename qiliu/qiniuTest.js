@@ -45,9 +45,9 @@ function uploadFile(id) {
   qiniu.io.putFile(token, key, localFile, extra, function(err, ret) {
     if(!err) {
       // 上传成功， 处理返回值
-      store.store(id,key).then(()=>{
-        return ret.key
-      })   
+      // store.store(id,key).then(()=>{
+      //   return ret.key
+      // })   
     } else {
       // 上传失败， 处理返回代码
       console.log(err)

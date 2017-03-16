@@ -4,15 +4,16 @@ const connect = require('./connect')
 
 function testLogin(id, pwd) {
   let connection = connect.getConnection()
-  let string1 = "SELECT * FROM library.user where cardId = \"" +id +"\"and password =\""+pwd+"\""
+  let string1 = "SELECT id,name,img FROM library.user where id = \"" +id +"\"and password =\""+pwd+"\""
   let deferred = Q.defer()
   connection.query(string1, (err, data) => {
     if (err)
       deferred.reject(err)
     else if(data.length!=0){
       let dataInfo = {
-        id:data[0].cardId,
-        name:data[0].name
+        id:data[0].id,
+        name:data[0].name,
+        img:data[0].img
       }
       deferred.resolve(dataInfo)
     }
