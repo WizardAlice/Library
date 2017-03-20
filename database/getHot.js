@@ -5,7 +5,7 @@ const _ = require('lodash')
 
 function getHot(){
   let connection = connect.getConnection()
-  let string1 = 'select bookID, count(*) AS count from library.borrowrec group by bookID order by count DESC limit 5'
+  let string1 = 'select bookID, count(*) AS count from library.borrowrec group by bookID order by count DESC limit 10'
   let deferred = Q.defer()
   connection.query(string1, (err,data)=>{
     if (err){
@@ -45,7 +45,7 @@ function getHot5(){
   return deferred.promise
 }
 
-getHot5().then((res)=>{
-  console.log(res)
-})
+// getHot5().then((res)=>{
+//   console.log(res)
+// })
 

@@ -38,14 +38,16 @@ app.post('/login',(req,res)=>{
   })
 })
 
-getNews.getNews().then((data)=>{
-  app.get('/getNews5',(req,res)=>{
+
+app.get('/getNews5',(req,res)=>{
+  getNews.getNews().then((data)=>{
     res.json(data)
   })
 })
 
-getHot5.getHot5().then((data)=>{
-  app.get('/getBookHot',(req,res)=>{
+
+app.get('/getBookHot',(req,res)=>{
+  getHot5.getHot5().then((data)=>{
     res.json(data)
   })
 })
