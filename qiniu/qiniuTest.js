@@ -12,7 +12,12 @@ bucket = 'taskuserimg';
 
 //上传到七牛后保存的文件名,在此生成一个哈希值
 
+let type = process.argv.splice(2)[0]
+let filepath = getFileType(type)  //第一个参数就是要上传的图片类型，由此分别上传某个文件夹下面的所有图片
 
+function getFileType(type){
+  return ('./img/img_of_'+type+'/')
+}
 
 function getKey(id){
   return fnv.hash(id,64).str()+'\.jpg'
@@ -32,7 +37,7 @@ function uptoken(bucket, key) {
 //要上传文件的本地路径,生成本地地址
 // filePath = './edit.png'
 function getFilePath(id){
-  return './img/img_of_news/'+id+'\.jpg'
+  return filepath+id+'\.jpg'
 }
 
 
@@ -44,10 +49,10 @@ function uploadFile(id) {
   var extra = new qiniu.io.PutExtra();
   qiniu.io.putFile(token, key, localFile, extra, function(err, ret) {
     if(!err) {
-      // 上传成功， 处理返回值
-      // store.store(id,key).then(()=>{
-      //   return ret.key
-      // })   
+      //上传成功， 处理返回值
+      store.store(id,key,type).then(()=>{
+        return ret.key
+      })   
     } else {
       // 上传失败， 处理返回代码
       console.log(err)
@@ -59,7 +64,7 @@ function uploadFile(id) {
 // uploadFile("0000000002");
 exports.uploadFile = uploadFile
 
-var datas = getFiles.getFiles.getImageFiles("./img/img_of_news/")
+var datas = getFiles.getFiles.getImageFiles(filepath)
 console.log(datas)
 datas.map((data)=>{
   uploadFile(data)

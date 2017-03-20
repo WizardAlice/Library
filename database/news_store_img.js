@@ -2,9 +2,9 @@ const mysql = require('mysql')
 const Q = require('q')
 const connect = require('./connect')
 
-function store(id,img){
+function store(id,img,type){
 	let connection = connect.getConnection()
-	let string1 = "UPDATE `library`.`news` SET `img`=\""+img+"\" WHERE `id`=\""+id+"\""
+	let string1 = "UPDATE `library`.`"+type+"` SET `img`=\""+img+"\" WHERE `id`=\""+id+"\""
 	let deferred = Q.defer()
 	console.log(string1)
 	connection.query(string1, (err,data)=>{
