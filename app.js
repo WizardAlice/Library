@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const testLogin = require('./database/testLogin')
 const getNews = require('./database/getNews')
+const getHot5 = require('./database/getHot')
 
 
 
@@ -43,6 +44,11 @@ getNews.getNews().then((data)=>{
   })
 })
 
+getHot5.getHot5().then((data)=>{
+  app.get('/getBookHot',(req,res)=>{
+    res.json(data)
+  })
+})
 
 app.listen(3000,function(){
 })
