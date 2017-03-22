@@ -4,9 +4,12 @@ const cheerio = require('cheerio')
 const Q = require('q')
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const testLogin = require('./database/testLogin')
-const getNews = require('./database/getNews')
-const getHot5 = require('./database/getHot')
+const testLogin = require('./database/user/testLogin')
+const getNews = require('./database/news/getNews')
+const getHot = require('./database/book/getHotBorrow')
+const getNewBook =require('./database/book/getNewBook')
+const collect = require('./database/user/collect')
+const getHotCollect = require('./database/book/getHotCollect')
 
 
 
@@ -23,11 +26,12 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
     next();//对于所有的路由执行下面的操作
 });
 
-// getBook.getBook().then((data)=>{
-//   app.get('/book',(req, res)=>{
-//     res.send(JSON.stringify(data))
-//   })
-// })
+app.get('/getHotCollect',(req,res)=>{
+  getHotCollect.getHotCollect().then((data)=>{
+    res.json(data)
+  })
+})
+
 
 app.post('/login',(req,res)=>{
   let data = req.body
@@ -38,6 +42,13 @@ app.post('/login',(req,res)=>{
   })
 })
 
+app.post('/collect',(req,res)=>{
+  let data = req.body
+  collect.collect(req.body.userid,req.body.bookid).then((data)=>{
+    res.json(data)
+  })
+})
+
 
 app.get('/getNews5',(req,res)=>{
   getNews.getNews().then((data)=>{
@@ -45,9 +56,14 @@ app.get('/getNews5',(req,res)=>{
   })
 })
 
+app.get('/getNewBooks',(req,res)=>{
+  getNewBook.getNewBook().then((data)=>{
+    res.json(data)
+  })
+})
 
 app.get('/getBookHot',(req,res)=>{
-  getHot5.getHot5().then((data)=>{
+  getHot.getHot().then((data)=>{
     res.json(data)
   })
 })

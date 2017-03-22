@@ -1,7 +1,7 @@
 const qiniu = require("qiniu")
 const fnv = require('fnv-plus')
 const getFiles = require('./getFile')
-const store = require('../database/news_store_img')
+const store = require('../database/store_img')
 
 //需要填写你的 Access Key 和 Secret Key
 qiniu.conf.ACCESS_KEY = 'MI-TKUDiDhATmP6nbdJKOzLK2llnrCkXoVmHbZpS';

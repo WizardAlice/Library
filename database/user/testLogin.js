@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 const Q = require('q')
-const connect = require('./connect')
+const connect = require('../connect')
 
 function testLogin(id, pwd) {
   let connection = connect.getConnection()
@@ -20,6 +20,7 @@ function testLogin(id, pwd) {
     else 
       deferred.resolve(data)
   })
+  connection.end()
   return deferred.promise
 }
 
