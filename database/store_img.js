@@ -13,6 +13,7 @@ function store(id,img,type){
 		else
 			deferred.resolve(data)
 	})
+	connection.end()
 	return deferred.promise
 }
 

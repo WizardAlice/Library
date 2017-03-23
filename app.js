@@ -8,8 +8,10 @@ const testLogin = require('./database/user/testLogin')
 const getNews = require('./database/news/getNews')
 const getHot = require('./database/book/getHotBorrow')
 const getNewBook =require('./database/book/getNewBook')
+const latestComment = require('./database/book/latestComment')
 const collect = require('./database/user/collect')
 const getHotCollect = require('./database/book/getHotCollect')
+const getInfo = require('./database/user/getInfo')
 
 
 
@@ -26,23 +28,35 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
     next();//对于所有的路由执行下面的操作
 });
 
-app.get('/getHotCollect',(req,res)=>{
+app.get('/getHotCollect',(req,res)=>{//热门收藏
   getHotCollect.getHotCollect().then((data)=>{
     res.json(data)
   })
 })
 
+app.post('/getUserInfo',(req,res)=>{//当前登录用户所有信息
+  console.log(req.body)
+  getInfo.getInfo(req.body.id).then((data)=>{
+    res.json(data)
+  })
+})
 
-app.post('/login',(req,res)=>{
+app.get('/latestComment',(req,res)=>{//首页最新评论
+  latestComment.latestComment().then((data)=>{
+    res.json(data)
+  })
+})
+
+app.post('/login',(req,res)=>{//登录
   let data = req.body
-  testLogin.testLogin(req.body.userName,req.body.pwd).then((result)=>{
+  testLogin.testLogin(data.userName,data.pwd).then((result)=>{
     console.log(result)
     if(result.length==0) res.json("fail")
     else {res.json(result)}
   })
 })
 
-app.post('/collect',(req,res)=>{
+app.post('/collect',(req,res)=>{//收藏某本书籍
   let data = req.body
   collect.collect(req.body.userid,req.body.bookid).then((data)=>{
     res.json(data)
@@ -50,19 +64,19 @@ app.post('/collect',(req,res)=>{
 })
 
 
-app.get('/getNews5',(req,res)=>{
+app.get('/getNews5',(req,res)=>{//获取最新的新闻
   getNews.getNews().then((data)=>{
     res.json(data)
   })
 })
 
-app.get('/getNewBooks',(req,res)=>{
+app.get('/getNewBooks',(req,res)=>{//新进的书籍
   getNewBook.getNewBook().then((data)=>{
     res.json(data)
   })
 })
 
-app.get('/getBookHot',(req,res)=>{
+app.get('/getBookHot',(req,res)=>{//热门借阅
   getHot.getHot().then((data)=>{
     res.json(data)
   })
