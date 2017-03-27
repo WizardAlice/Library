@@ -12,6 +12,8 @@ const latestComment = require('./database/book/latestComment')
 const collect = require('./database/user/collect')
 const getHotCollect = require('./database/book/getHotCollect')
 const getInfo = require('./database/user/getInfo')
+const changeInfo = require('./database/user/changeInfo')
+const changeUserImg = require('./fs/testfs')
 
 
 
@@ -35,9 +37,19 @@ app.get('/getHotCollect',(req,res)=>{//热门收藏
 })
 
 app.post('/getUserInfo',(req,res)=>{//当前登录用户所有信息
-  console.log(req.body)
   getInfo.getInfo(req.body.id).then((data)=>{
     res.json(data)
+  })
+})
+
+app.post('/getUserImg',(req,res)=>{
+  changeUserImg.changeUserImg(req.body.id,req.body.userimg)
+  res.json({result:"success"})
+})
+
+app.post('/changeUserInfo',(req,res)=>{
+  changeInfo.changeInfo(req.body).then((res)=>{
+    res.json({result:"success"})
   })
 })
 

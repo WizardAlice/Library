@@ -50,6 +50,7 @@ function uploadFile(id) {
   qiniu.io.putFile(token, key, localFile, extra, function(err, ret) {
     if(!err) {
       //上传成功， 处理返回值
+      console.log(ret.key)
       store.store(id,key,type).then(()=>{
         return ret.key
       })   
