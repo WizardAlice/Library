@@ -12,6 +12,7 @@ const getNewBook =require('./database/book/getNewBook')
 const latestComment = require('./database/book/latestComment')
 const collect = require('./database/user/collect')
 const getHotCollect = require('./database/book/getHotCollect')
+const getHotComment = require('./database/book/getHotComment')
 const getInfo = require('./database/user/getInfo')
 const changeInfo = require('./database/user/changeInfo')
 const changeUserImg = require('./fs/testfs')
@@ -33,6 +34,12 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
 
 app.get('/getHotCollect',(req,res)=>{//热门收藏
   getHotCollect.getHotCollect().then((data)=>{
+    res.json(data)
+  })
+})
+
+app.get('/getHotComment',(req,res)=>{
+  getHotComment.getHotComment().then((data)=>{
     res.json(data)
   })
 })

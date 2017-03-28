@@ -8,7 +8,6 @@ function getHotCollect(){
   let deferred = Q.defer()
   connection.query(string1, (err,data)=>{
     if (err){
-      console.log(err)
       deferred.reject(err)
     }
     else
