@@ -5,6 +5,7 @@ const Q = require('q')
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const testLogin = require('./database/user/testLogin')
+const getBorrowInfo = require('./database/user/getBorrowInfo')
 const getNews = require('./database/news/getNews')
 const getHot = require('./database/book/getHotBorrow')
 const getNewBook =require('./database/book/getNewBook')
@@ -36,6 +37,12 @@ app.get('/getHotCollect',(req,res)=>{//热门收藏
   })
 })
 
+app.post('/getBorrowInfo',(req,res)=>{
+  getBorrowInfo.getBorrowInfo(req.body.id).then((data)=>{
+    res.json(data)
+  })
+})
+
 app.post('/getUserInfo',(req,res)=>{//当前登录用户所有信息
   getInfo.getInfo(req.body.id).then((data)=>{
     res.json(data)
@@ -47,9 +54,9 @@ app.post('/getUserImg',(req,res)=>{
   res.json({result:"success"})
 })
 
-app.post('/changeUserInfo',(req,res)=>{
-  changeInfo.changeInfo(req.body).then((res)=>{
-    res.json({result:"success"})
+app.post('/changeUserInfo',(req,res)=>{///修改用户信息
+  changeInfo.changeInfo(req.body).then((data)=>{
+    res.json(data)
   })
 })
 
