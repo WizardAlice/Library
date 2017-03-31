@@ -1,93 +1,116 @@
 const express = require('express')
-const superagent = require('superagent')
-const cheerio = require('cheerio')
-const Q = require('q')
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const testLogin = require('./database/user/testLogin')
-const getBorrowInfo = require('./database/user/getBorrowInfo')
-const getNews = require('./database/news/getNews')
-const getHot = require('./database/book/getHotBorrow')
-const getNewBook =require('./database/book/getNewBook')
-const latestComment = require('./database/book/latestComment')
-const collect = require('./database/user/collect')
-const getHotCollect = require('./database/book/getHotCollect')
-const getHotComment = require('./database/book/getHotComment')
-const getInfo = require('./database/user/getInfo')
-const changeInfo = require('./database/user/changeInfo')
-const changeUserImg = require('./fs/testfs')
+
+const bodyParser = require('body-parser') //中间件
+const multer = require('multer')
 
 
+
+const getInfo = require('./database/user/getInfo')  //用户的所有操作
+const changeUserImg = require('./fs/testfs')   
+
+const getNews = require('./database/news/getNews') 
+
+const getHot = require('./database/book/getHotBorrow') //书籍相关
 
 let app = express()
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
+app.use(express.static('qiniu'))
 
 app.all('*', function(req, res, next) {//开发模式下允许跨域访问
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();//对于所有的路由执行下面的操作
+    next();
 });
 
-app.get('/getHotCollect',(req,res)=>{//热门收藏
-  getHotCollect.getHotCollect().then((data)=>{
+
+
+app.get('/getHotCollect',(req,res)=>{//首页书相关的
+  getHot.getHotCollect().then((data)=>{
     res.json(data)
   })
 })
 
-app.get('/getHotComment',(req,res)=>{
-  getHotComment.getHotComment().then((data)=>{
+app.get('/getHotComment',(req,res)=>{ 
+  getHot.getHotComment().then((data)=>{
     res.json(data)
   })
 })
 
-app.post('/getBorrowInfo',(req,res)=>{
-  getBorrowInfo.getBorrowInfo(req.body.id).then((data)=>{
+app.get('/latestComment',(req,res)=>{
+  getHot.latestComment().then((data)=>{
+    res.json(data)
+  })
+})
+app.get('/getNewBooks',(req,res)=>{
+  getHot.getNewBook().then((data)=>{
     res.json(data)
   })
 })
 
-app.post('/getUserInfo',(req,res)=>{//当前登录用户所有信息
-  getInfo.getInfo(req.body.id).then((data)=>{
+app.get('/getBookHot',(req,res)=>{
+  getHot.getHot().then((data)=>{
     res.json(data)
   })
 })
+
+app.post('/getbookInfo',(req,res)=>{
+  getHot.getBookInfo(req.body.id).then((data)=>{
+    res.json(data)
+  })
+})
+
+app.get('/getallbook',(req,res)=>{
+  getHot.getallbook().then((data)=>{
+    res.json(data)
+  })
+})
+
+
 
 app.post('/getUserImg',(req,res)=>{
   changeUserImg.changeUserImg(req.body.id,req.body.userimg)
   res.json({result:"success"})
 })
 
-app.post('/changeUserInfo',(req,res)=>{///修改用户信息
-  changeInfo.changeInfo(req.body).then((data)=>{
+
+app.post('/getBorrowInfo',(req,res)=>{ //当前登录用户的借阅信息
+  getInfo.getBorrowInfo(req.body.id).then((data)=>{
     res.json(data)
   })
 })
 
-app.get('/latestComment',(req,res)=>{//首页最新评论
-  latestComment.latestComment().then((data)=>{
+app.post('/getUserInfo',(req,res)=>{
+  getInfo.getInfo(req.body.id).then((data)=>{
     res.json(data)
   })
 })
 
-app.post('/login',(req,res)=>{//登录
+app.post('/changeUserInfo',(req,res)=>{
+  getInfo.changeInfo(req.body).then((data)=>{
+    res.json(data)
+  })
+})
+
+app.post('/login',(req,res)=>{
   let data = req.body
-  testLogin.testLogin(data.userName,data.pwd).then((result)=>{
-    console.log(result)
+  getInfo.testLogin(data.userName,data.pwd).then((result)=>{
     if(result.length==0) res.json("fail")
     else {res.json(result)}
   })
 })
 
-app.post('/collect',(req,res)=>{//收藏某本书籍
+app.post('/collect',(req,res)=>{
   let data = req.body
-  collect.collect(req.body.userid,req.body.bookid).then((data)=>{
+  getInfo.collect(req.body.userid,req.body.bookid).then((data)=>{
     res.json(data)
   })
 })
+
+
 
 
 app.get('/getNews5',(req,res)=>{//获取最新的新闻
@@ -96,17 +119,7 @@ app.get('/getNews5',(req,res)=>{//获取最新的新闻
   })
 })
 
-app.get('/getNewBooks',(req,res)=>{//新进的书籍
-  getNewBook.getNewBook().then((data)=>{
-    res.json(data)
-  })
-})
 
-app.get('/getBookHot',(req,res)=>{//热门借阅
-  getHot.getHot().then((data)=>{
-    res.json(data)
-  })
-})
 
 app.listen(3000,function(){
 })

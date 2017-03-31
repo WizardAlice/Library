@@ -51,6 +51,6 @@ var getFiles = {
 exports.getFiles = getFiles
 
 //获取文件夹下的所有图片
-var datas = getFiles.getImageFiles("./img/img_of_news/")
+// var datas = getFiles.getImageFiles("./img/img_of_news/")
 //获取文件夹下的所有文件
 // getFiles.getFileList("./public/")
