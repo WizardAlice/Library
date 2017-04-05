@@ -1,40 +1,45 @@
-const config = {
-  chart: {
-      type: 'column'
-  },
-  title: {
-      text: 'My first Highcharts chart'
-  },
-  xAxis: {
-      categories: ['苹果', '香蕉', '橙子']   //指定x轴分组
-  },
-  yAxis: {
-      title: {
-          text: 'something'
-      }
-  },
-  tooltip: {
-      headerFormat: '{series.name}<br>',
-      pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
-  },
-}
+const solr = require('solr-client');
+const fs = require('fs')
+const exec = require('child_process').exec
 
-let suibian={series : [{
-      type: 'pie',
-      name: '浏览器访问量占比',
-      data: [
-          ['Firefox',   45.0],
-          ['IE',       26.8],
-          {
-              name: 'Chrome',
-              y: 12.8,
-              sliced: true,
-              selected: true
-          },
-          ['Safari',    8.5],
-          ['Opera',     6.2],
-          ['其他',   0.7]
-      ]
-  }]}
+// Create a client
+let host = "127.0.0.1"
+let port = "8983"
+let core = "Run"
+let path = "/solr"
+var client = solr.createClient(host,port,core,path)
 
-  console.log(Object.assign(config,suibian).series[0].data)
+client.autoCommit = true
+
+let string = "未解决"
+client.search('q='+string, function(err, obj){
+  if(err) console.log(err)
+  console.log(obj.response.docs[0].id);
+})
+
+
+
+// var options = {   //上传的文件
+//   path : 'E:\\solr-6.5.0\\example\\exampledocs\\folder',
+//   format : 'folder'
+// }
+
+
+
+// client.addRemoteResource(options,function(err,obj){  //上传索引库的配置
+//    if(err){
+//       console.log(err)
+//    }else{
+//       console.log(obj)
+//    }
+//   client.commit(function(err,res){  //设置commit=true
+//     if(err) console.log(err)
+//     if(res) console.log(res)
+//   })
+// })
+
+// let cmd = "cd fs && java -Dauto -Durl=http://localhost:8983/solr/Run/update -jar post.jar E:\\solr-6.5.0\\example\\exampledocs\\folder" //上传某一个文件夹
+// exec(cmd,(err)=>{
+//   if(err)
+//     console.log(err)
+// })
