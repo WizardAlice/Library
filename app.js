@@ -29,7 +29,8 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
 });
 
 app.post('/gettest',(req,res)=>{             //上传文件
-  runStore.runStore(req.body.userid,req.files.file.originalname,req.files.file.path,req.files.file.name,req.files.file.size)
+  console.log(req.body.type)
+  runStore.runStore(req.body.userid,req.files.file.originalname,req.files.file.path,req.files.file.name,req.body.type)
   res.json({url:"http://localhost:3000/"+req.body.userid+"/"+req.files.file.name,img:req.files.file.name})
 })
 
@@ -118,12 +119,15 @@ app.post('/collect',(req,res)=>{
 })
 
 
-
-
 app.get('/getNews5',(req,res)=>{//获取最新的新闻
   getNews.getNews().then((data)=>{
     res.json(data)
   })
+})
+
+app.post('/uploadNews',(req,res)=>{ //添加一条新的新闻
+  console.log(req.body)
+  res.json({result:"get"})
 })
 
 
