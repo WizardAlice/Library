@@ -1,6 +1,7 @@
-const solr = require('solr-client');
-const fs = require('fs')
-const exec = require('child_process').exec
+const solr = require('solr-client')
+const Q = require('q')
+// const fs = require('fs')
+// const exec = require('child_process').exec
 
 // Create a client
 let host = "127.0.0.1"
@@ -11,12 +12,16 @@ var client = solr.createClient(host,port,core,path)
 
 client.autoCommit = true
 
-let string = "WizardAlice"
-client.search('q='+string, function(err, obj){
-  if(err) console.log(err)
-  console.log(obj.response.docs);
-})
+function searchUser(a){
+  let deferred = Q.defer()
+	client.search('q='+a, function(err, obj){
+	  if(err) deferred.reject(err)
+    else deferred.resolve(obj.response)
+	})
+  return deferred.promise
+}
 
+exports.searchUser = searchUser
 
 
 // var options = {   //上传的文件
@@ -38,7 +43,7 @@ client.search('q='+string, function(err, obj){
 //   })
 // })
 
-// let cmd = "java -Dauto -Durl=http://localhost:8983/solr/Run/update -jar post.jar E:\\solr-6.5.0\\example\\exampledocs\\folder" //上传某一个文件夹
+// let cmd = "cd fs && java -Dauto -Durl=http://localhost:8983/solr/Run/update -jar post.jar E:\\solr-6.5.0\\example\\exampledocs\\folder" //上传某一个文件夹
 // exec(cmd,(err)=>{
 //   if(err)
 //     console.log(err)

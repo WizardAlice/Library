@@ -3,8 +3,6 @@ const express = require('express')
 const bodyParser = require('body-parser') //中间件
 const multer = require('multer')
 
-
-
 const getInfo = require('./database/user/getInfo')  //用户的所有操作
 const changeUserImg = require('./fs/testfs')   
 
@@ -13,6 +11,8 @@ const getNews = require('./database/news/getNews')
 const getHot = require('./database/book/getHotBorrow') //书籍相关
 
 const runStore = require('./database/run_store')
+
+const searchUser = require('./Search/User')
 let app = express()
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -28,13 +28,17 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
     next();
 });
 
+app.post('/searchuser',(req,res)=>{
+  searchUser.searchUser(req.body.content).then((data)=>{
+    res.json(data)
+  })
+})
+
 app.post('/gettest',(req,res)=>{             //上传文件
   console.log(req.body.type)
   runStore.runStore(req.body.userid,req.files.file.originalname,req.files.file.path,req.files.file.name,req.body.type)
   res.json({url:"http://localhost:3000/"+req.body.userid+"/"+req.files.file.name,img:req.files.file.name})
 })
-
-
 
 app.get('/getHotCollect',(req,res)=>{//首页书相关的
   getHot.getHotCollect().then((data)=>{
