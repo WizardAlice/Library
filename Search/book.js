@@ -6,22 +6,23 @@ const Q = require('q')
 // Create a client
 let host = "127.0.0.1"
 let port = "8983"
-let core = "Run"
+let core = "book"
 let path = "/solr"
 var client = solr.createClient(host,port,core,path)
 
 client.autoCommit = true
 
-function searchUser(a){
+function searchBook(a){
   let deferred = Q.defer()
-	client.search('q='+a, function(err, obj){
-	  if(err) deferred.reject(err)
+  let string = encodeURI(a)
+  client.search('q='+string, function(err, obj){
+    if(err) deferred.resolve(err)
     else deferred.resolve(obj.response)
-	})
+  })
   return deferred.promise
 }
 
-exports.searchUser = searchUser
+exports.searchBook = searchBook
 
 
 // var options = {   //上传的文件
