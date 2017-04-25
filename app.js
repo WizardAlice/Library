@@ -13,6 +13,7 @@ const getHot = require('./database/book/getHotBorrow') //书籍相关
 const runStore = require('./database/run_store')
 
 const searchBook = require('./Search/book')
+const searchUser = require('./Search/user')
 let app = express()
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -30,6 +31,12 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
 
 app.post('/searchBook',(req,res)=>{
   searchBook.searchBook(req.body.content).then((data)=>{
+    res.json(data)
+  })
+})
+
+app.post('/searchUser',(req,res)=>{
+  searchUser.searchUser(req.body.content).then((data)=>{
     res.json(data)
   })
 })
