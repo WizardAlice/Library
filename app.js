@@ -1,5 +1,7 @@
 const express = require('express')
 
+const exec = require('child_process').exec
+
 const bodyParser = require('body-parser') //中间件
 const multer = require('multer')
 
@@ -11,6 +13,8 @@ const getNews = require('./database/news/getNews')
 const getHot = require('./database/book/getHotBorrow') //书籍相关
 
 const runStore = require('./database/run_store')
+
+const addNews = require('./database/manager/manager')
 
 const searchBook = require('./Search/book')
 const searchUser = require('./Search/user')
@@ -29,13 +33,24 @@ app.all('*', function(req, res, next) {//开发模式下允许跨域访问
     next();
 });
 
-app.post('/searchBook',(req,res)=>{
+app.post('/uploadNews',(req,res)=>{ //添加一条新的新闻
+  addNews.addNews(req.body).then((data)=>{
+    let cmd = "cd qiniu && node qiniuTest.js news"
+    exec(cmd,(err)=>{
+    if(err)
+      console.log(err)
+    })
+    res.json(data)
+  })
+})
+
+app.post('/searchBook',(req,res)=>{  //搜索书籍
   searchBook.searchBook(req.body.content).then((data)=>{
     res.json(data)
   })
 })
 
-app.post('/searchUser',(req,res)=>{
+app.post('/searchUser',(req,res)=>{  //搜索用户
   searchUser.searchUser(req.body.content).then((data)=>{
     res.json(data)
   })
@@ -124,7 +139,14 @@ app.post('/login',(req,res)=>{
 
 app.post('/collect',(req,res)=>{
   let data = req.body
-  getInfo.collect(req.body.userid,req.body.bookid).then((data)=>{
+  getInfo.collect(data.userid,data.bookid).then((data)=>{
+    res.json(data)
+  })
+})
+
+app.post('/order',(req, res) => {
+  let data = req.body
+  getInfo.order(data.userid,data.bookid).then((data)=>{
     res.json(data)
   })
 })
@@ -136,10 +158,6 @@ app.get('/getNews5',(req,res)=>{//获取最新的新闻
   })
 })
 
-app.post('/uploadNews',(req,res)=>{ //添加一条新的新闻
-  console.log(req.body)
-  res.json({result:"get"})
-})
 
 
 

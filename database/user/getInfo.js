@@ -161,3 +161,42 @@ function collect(userid,bookid){
 }
 
 exports.collect = collect
+
+function isOrder(userid,bookid){
+  let connection = connect.getConnection()
+  let string1 = 'SELECT * FROM library.order where userid = \''+userid+'\' and bookid = \''+bookid+'\''
+  let deferred = Q.defer()
+  connection.query(string1,(err,data)=>{
+    if(err)
+      deferred.reject(err)
+    else
+      deferred.resolve(data)
+  })
+  connection.end()
+  return deferred.promise
+}
+
+function order(userid,bookid){
+  let connection = connect.getConnection()
+  let string1 = 'INSERT INTO `library`.`order` (`userid`, `bookid`) VALUES (\''+userid+'\', \''+bookid+'\')'
+  let deferred = Q.defer()
+  isOrder(userid,bookid).then((data)=>{
+    if(data.length!=0){
+      deferred.resolve({answer:"Collected Already!"})
+    }
+    else{
+      connection.query(string1, (err,data)=>{
+        if (err){
+          deferred.reject(err)
+        }
+        else{
+          deferred.resolve({answer:"Collected Success!"})
+        }
+      })
+      connection.end()
+    }
+  })
+  return deferred.promise
+}
+
+exports.order = order
